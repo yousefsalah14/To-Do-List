@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { Logo } from "./components/logo.js";
+import { Form } from "./components/form.js";
+import { List } from "./components/list.js";
+import { Stats } from "./components/stats.js";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App ()
+{
+  const [ tasks, setTasks ] = useState( [] )
+
+  function handleAddTasks (task)
+  {
+    const orderExists = tasks.some(t => t.order === task.order);
+    if (orderExists) {
+        alert(`Task with order ${task.order} already exists.`);
+        return; 
+    }
+    setTasks( tasks => [ ...tasks, task ] )
+
+  }
+  function handleDeleteTask (id)
+  {
+    setTasks(tasks=>tasks.filter(task=> task.id !== id))
+  }
+  function handleToggleTask (id)
+  {
+    setTasks(tasks=>tasks.map(task=> task.id === id ? {...task, finished : !task.finished} : task))
+  }
+  return <div className="app">
+    <Logo />
+    <Form onAddTask = {handleAddTasks} />
+    <List tasks={ tasks } onDeleteTask={ handleDeleteTask } onToggleTask={ handleToggleTask } setTasks={ setTasks} />
+    <Stats tasks={tasks}  />
+  </div>
 }
 
-export default App;
+
+
+
